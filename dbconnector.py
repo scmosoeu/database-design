@@ -26,3 +26,8 @@ def load_config(section: str = 'mssql') -> dict:
         params = parser.items(section)
         for param in params:
             config[param[0]] = param[1]
+
+    else:
+        raise Exception(f'Section {section} not found in .ini file')
+
+    return config
