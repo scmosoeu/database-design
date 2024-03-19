@@ -58,3 +58,7 @@ class ProductSales(db.Model):
     total_value_sold = db.Column(db.Float)
     total_quantity_sold = db.Column(db.Integer)
     total_kg_sold = db.Column(db.Float)
+
+
+with app.app_context():
+    db.create_all()
