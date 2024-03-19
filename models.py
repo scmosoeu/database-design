@@ -22,6 +22,7 @@ class ProcessDate(db.Model):
 
 class Product(db.Model):
     __tablename__ = 'products'
+
     id = db.Column(db.Integer, primary_key=True)
     commodity = db.Column(db.String(50))
     product_sales = db.relationship(
@@ -30,6 +31,7 @@ class Product(db.Model):
 
 class Container(db.Model):
     __tablename__ = 'containers'
+
     id = db.Column(db.Integer, primary_key=True)
     container = db.Column(db.String(50))
     container_sales = db.relationship(
@@ -38,6 +40,7 @@ class Container(db.Model):
 
 class ProductCombination(db.Model):
     __tablename__ = 'combinations'
+
     id = db.Column(db.Integer, primary_key=True)
     combination = db.Column(db.String(50))
     combination_sales = db.relationship(
@@ -46,6 +49,8 @@ class ProductCombination(db.Model):
 
 class ProductSales(db.Model):
     __tablename__ = 'product_sales'
+
+    id = db.Column(db.Integer, primary_key=True)
     information_date = db.Column(db.String(20))
     commodity_id = db.Column(db.Integer, db.ForeignKey('products.id'))
     container_id = db.Column(db.Integer, db.ForeignKey('containers.id'))
