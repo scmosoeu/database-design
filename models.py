@@ -19,7 +19,7 @@ class Product(db.Model):
     __tablename__ = 'products'
 
     id = db.Column(db.Integer, primary_key=True)
-    commodity = db.Column(db.String(50), unique=True)
+    commodity = db.Column(db.String(50))
     product_sales = db.relationship(
         'ProductSales', backref='products', lazy=True)
 
@@ -28,7 +28,7 @@ class Container(db.Model):
     __tablename__ = 'containers'
 
     id = db.Column(db.Integer, primary_key=True)
-    container = db.Column(db.String(50), unique=True)
+    container = db.Column(db.String(50))
     container_sales = db.relationship(
         'ProductSales', backref='containers', lazy=True)
 
@@ -37,7 +37,7 @@ class ProductCombination(db.Model):
     __tablename__ = 'combinations'
 
     id = db.Column(db.Integer, primary_key=True)
-    combination = db.Column(db.String(50), unique=True)
+    combination = db.Column(db.String(50))
     combination_sales = db.relationship(
         'ProductSales', backref='combinations', lazy=True)
 

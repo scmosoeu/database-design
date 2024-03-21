@@ -2,7 +2,9 @@ from dbconnector import load_config
 from resources import create_app
 from resources.extensions import db
 
-from models import ProcessDate, Product, ProductCombination, ProductSales
+from models import (
+    ProcessDate, Product, Container, ProductCombination, ProductSales
+)
 from utils import SQLConnector
 
 
@@ -17,10 +19,12 @@ def normalize_data():
 
     # Check processed dates in the data
     process_dates = sql_connector.run_query(
-        "SELECT information_date FROM process_date")
+        "SELECT information_date FROM process_date"
+    )
     # Query dates when data was extracted
     extract_dates = sql_connector.run_query(
-        "SELECT information_date FROM extract_date ORDER BY information_date")
+        "SELECT information_date FROM extract_date ORDER BY information_date"
+    )
     # Pull dates when the data was extracted
     extracted_dates = [extract_date[0] for extract_date in extract_dates]
 
@@ -34,8 +38,28 @@ def normalize_data():
 
     else:
         for extracted_date in extracted_dates:
+            # Processing the date column
             process_date = ProcessDate(information_date=extracted_date)
             db.session.add(process_date)
+
+        with open('sql_scripts/initial_ingestion.sql', 'r') as sql_script:
+            sales = sql_connector.run_query(sql_script.read())
+            for sale in sales:
+                commodity = Product(commodity=sale[1])
+                container = Container(container=sale[2])
+                combination = ProductCombination(combination=sale[3])
+
+                process_sales = ProductSales(
+                    information_date=sale[0],
+                    products=commodity,
+                    containers=container,
+                    combinations=combination,
+                    total_value_sold=sale[4],
+                    total_quantity_sold=sale[5],
+                    total_kg_sold=sale[6]
+                )
+
+                db.session.add(process_sales)
 
     db.session.commit()
 
