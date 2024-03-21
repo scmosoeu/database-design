@@ -1,9 +1,10 @@
-
+# mypackage/__init__.py
 
 from flask import Flask
 
-from extensions import db
-from . import create_app
+from resources import create_app
+from resources.extensions import db
+
 
 app = create_app()
 
