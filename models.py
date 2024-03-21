@@ -1,30 +1,24 @@
-import os
 
-from dotenv import load_dotenv
 
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
 
-load_dotenv()
-app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URI')
-# Avoid getting warning messages
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+from extensions import db
+from . import create_app
 
-db = SQLAlchemy(app)
+app = create_app()
 
 
 class ProcessDate(db.Model):
     __tablename__ = 'process_date'
     id = db.Column(db.Integer, primary_key=True)
-    information_date = db.Column(db.String(20))
+    information_date = db.Column(db.String(20), unique=True)
 
 
 class Product(db.Model):
     __tablename__ = 'products'
 
     id = db.Column(db.Integer, primary_key=True)
-    commodity = db.Column(db.String(50))
+    commodity = db.Column(db.String(50), unique=True)
     product_sales = db.relationship(
         'ProductSales', backref='products', lazy=True)
 
@@ -33,7 +27,7 @@ class Container(db.Model):
     __tablename__ = 'containers'
 
     id = db.Column(db.Integer, primary_key=True)
-    container = db.Column(db.String(50))
+    container = db.Column(db.String(50), unique=True)
     container_sales = db.relationship(
         'ProductSales', backref='containers', lazy=True)
 
@@ -42,7 +36,7 @@ class ProductCombination(db.Model):
     __tablename__ = 'combinations'
 
     id = db.Column(db.Integer, primary_key=True)
-    combination = db.Column(db.String(50))
+    combination = db.Column(db.String(50), unique=True)
     combination_sales = db.relationship(
         'ProductSales', backref='combinations', lazy=True)
 
