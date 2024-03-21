@@ -1,6 +1,7 @@
 from dbconnector import load_config
 from resources import create_app
 from resources.extensions import db
+from sqlalchemy.exc import IntegrityError
 
 from models import (
     ProcessDate, Product, Container, ProductCombination, ProductSales
@@ -46,9 +47,26 @@ def normalize_data():
         with open('sql_scripts/initial_ingestion.sql', 'r') as sql_script:
             sales = sql_connector.run_query(sql_script.read())
             for sale in sales:
-                commodity = Product(commodity=sale[1])
-                container = Container(container=sale[2])
-                combination = ProductCombination(combination=sale[3])
+                # Check if product, container, and combination exist before adding
+                commodity = Product.query.filter_by(commodity=sale[1]).first()
+                if not commodity:
+                    commodity = Product(commodity=sale[1])
+                    db.session.add(commodity)
+
+                container = Container.query.filter_by(
+                    container=sale[2]).first()
+                if not container:
+                    container = Container(container=sale[2])
+                    db.session.add(container)
+
+                combination = ProductCombination.query.filter_by(
+                    combination=sale[3]).first()
+                if not combination:
+                    combination = ProductCombination(combination=sale[3])
+                    db.session.add(combination)
+
+                # Commit the changes to avoid duplicate inserts
+                db.session.commit()
 
                 process_sales = ProductSales(
                     information_date=sale[0],
