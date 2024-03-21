@@ -35,6 +35,7 @@ def normalize_data():
         for selected_date in selected_dates:
             process_date = ProcessDate(information_date=selected_date)
             db.session.add(process_date)
+            db.session.commit()
 
     else:
         for extracted_date in extracted_dates:
@@ -61,7 +62,7 @@ def normalize_data():
 
                 db.session.add(process_sales)
 
-    db.session.commit()
+                db.session.commit()
 
     sql_connector.close_all()
 
