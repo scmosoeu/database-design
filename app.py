@@ -38,6 +38,46 @@ def normalize_data():
             db.session.add(process_date)
             db.session.commit()
 
+            with open('sql_scripts/delta_ingestion.sql', 'r') as sql_script:
+                script = sql_script.read()
+                sales = sql_connector.run_query(script.format(selected_date))
+                for sale in sales:
+                    # Check if product, container, and combination exist before adding
+                    commodity = Product.query.filter_by(
+                        commodity=sale[1]).first()
+                    if not commodity:
+                        commodity = Product(commodity=sale[1])
+                        db.session.add(commodity)
+
+                    container = Container.query.filter_by(
+                        container=sale[2]).first()
+                    if not container:
+                        container = Container(container=sale[2])
+                        db.session.add(container)
+
+                    combination = ProductCombination.query.filter_by(
+                        combination=sale[3]).first()
+                    if not combination:
+                        combination = ProductCombination(combination=sale[3])
+                        db.session.add(combination)
+
+                    # Commit the changes to avoid duplicate inserts
+                    db.session.commit()
+
+                    process_sales = ProductSales(
+                        information_date=sale[0],
+                        products=commodity,
+                        containers=container,
+                        combinations=combination,
+                        total_value_sold=sale[4],
+                        total_quantity_sold=sale[5],
+                        total_kg_sold=sale[6]
+                    )
+
+                    db.session.add(process_sales)
+
+                    db.session.commit()
+
     else:
         for extracted_date in extracted_dates:
             # Processing the date column
