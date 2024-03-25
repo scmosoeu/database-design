@@ -1,4 +1,4 @@
-# database-design
+# Relationa Database
 
 Database normalization to star or snowflake format
 
