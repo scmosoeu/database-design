@@ -1,4 +1,4 @@
-# Relationa Database
+# Relational Database
 
 Database normalization to star or snowflake format
 
