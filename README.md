@@ -2,6 +2,27 @@
 
 Database normalization to star or snowflake format
 
+## Layout
+
+```bash
+.
+└── database-design
+    ├── imgs
+    │   └── data_model.PNG                  # image of resulting data model
+    ├── resources
+    │   ├── __init__.py
+    │   └── extensions.py                   # initialize sqlalchemy
+    ├── sql_scripts
+    │   ├── delta_ingestion.sql             # normalizes only data that is not normalized in the database 
+    │   └── initial_ingestion.sql           # initial ingestion where all the data was normalized at once
+    ├── app.py                              # runs the code to normalize the data
+    ├── dbconnector.py                      # connection details to a database
+    ├── models.py                           # data models
+    ├── README.md
+    ├── requirements.txt
+    └── utils.py                            # connects to a database
+```
+
 The relational database is created using using flask and flask-sqlalchemy.
 
 ```bash
